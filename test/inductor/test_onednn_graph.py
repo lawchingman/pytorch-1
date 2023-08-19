@@ -10,19 +10,19 @@ from torch._dynamo.backends.common import aot_autograd
 from torch._dynamo.backends.registry import _BACKENDS, register_backend
 from torch._dynamo.test_case import run_tests, TestCase
 from torch._inductor.decomposition import select_decomp_table
-from torch._inductor.fx_passes.onednn_graph_fusion import (
-    allow_manydim_bmm,
-    onednn_graph_fuse_fx,
-    remove_redundant_expand,
-    replace_max_pool_with_indices,
-    replace_t_matmul_to_matmul,
-)
+from torch.testing._internal.common_utils import IS_LINUX, IS_WINDOWS, IS_MACOS
 from torch.fx.experimental.proxy_tensor import make_fx
-from torch.testing._internal.common_utils import IS_LINUX
 from torch.testing._internal.inductor_utils import HAS_CPU
-from torch.testing._internal.common_utils import IS_WINDOWS, IS_MACOS
 
 ONEDNN_GRAPH_NOT_ENABLED = not torch.backends.mkldnn.is_available() or IS_WINDOWS or IS_MACOS
+if not ONEDNN_GRAPH_NOT_ENABLED:
+    from torch._inductor.fx_passes.onednn_graph_fusion import (
+        allow_manydim_bmm,
+        onednn_graph_fuse_fx,
+        remove_redundant_expand,
+        replace_max_pool_with_indices,
+        replace_t_matmul_to_matmul,
+    )
 
 @unittest.skipIf(ONEDNN_GRAPH_NOT_ENABLED, "MKL-DNN build is disabled")
 class TestOnednnGraphInductor(TestCase):
