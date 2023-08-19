@@ -21,7 +21,9 @@ from torch.fx.experimental.proxy_tensor import make_fx
 from torch.testing._internal.common_utils import IS_LINUX
 from torch.testing._internal.inductor_utils import HAS_CPU
 
+ONEDNN_GRAPH_NOT_ENABLED = not torch.backends.mkldnn.is_available() or IS_WINDOWS or IS_MACOS
 
+@unittest.skipIf(ONEDNN_GRAPH_NOT_ENABLED, "MKL-DNN build is disabled")
 class TestOnednnGraphInductor(TestCase):
     def _compile_and_check_accuracy(self, mod, args, **kwargs):
         compiled_model = torch.compile(mod, options={"cpp.onednn_graph": True})
@@ -321,7 +323,7 @@ class TestOnednnGraphInductor(TestCase):
             )
             self._compile_and_check_accuracy(mod, args=(x,))
 
-
+@unittest.skipIf(ONEDNN_GRAPH_NOT_ENABLED, "MKL-DNN build is disabled")
 class TestOnednnGraphRewrite(torch._dynamo.test_case.TestCase):
     def _check_graph_rewrites(
         self,
