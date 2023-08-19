@@ -20,6 +20,7 @@ from torch._inductor.fx_passes.onednn_graph_fusion import (
 from torch.fx.experimental.proxy_tensor import make_fx
 from torch.testing._internal.common_utils import IS_LINUX
 from torch.testing._internal.inductor_utils import HAS_CPU
+from torch.testing._internal.common_utils import IS_WINDOWS, IS_MACOS
 
 ONEDNN_GRAPH_NOT_ENABLED = not torch.backends.mkldnn.is_available() or IS_WINDOWS or IS_MACOS
 
